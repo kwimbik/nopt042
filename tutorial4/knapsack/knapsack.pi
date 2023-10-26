@@ -1,0 +1,37 @@
+import cp.
+
+selection(VarSels) =>
+    VarSels = [backward,constr,degree,ff,ffc,ffd,forward,inout,leftmost,max,min,up].
+
+
+
+main(Args) =>
+    DTA = Args[1],
+    if (length(Args) = 2) then
+        DTA := Args[2],
+    end,
+    load(DTA),
+    instance(Items, Capacity, Values, Weights),
+    M = Capacity // min(Weights), %domenu omezeujeme max poctem predmetu s nejlejhci vahou
+    if (length(Args) = 2 && Args[1] = "-01") then
+        M := 1, %  Resime 01 knapsack
+    end,
+    
+    selection(VarSels), 
+    foreach (VarSel in VarSels)
+        knapsack_problem(Items, Capacity, Values, Weights,M,X,Sum,Cost),
+        solve($[max(Cost),VarSel],X),
+        println(Cost),
+        println(X),
+    end.
+
+
+knapsack_problem(Items,Capacity,Values,Weights,M,X,Sum,Cost) =>
+    X = new_list(length(Items)),
+    X :: 0..M,
+    Sum #= sum([X[I] * Weights[I]: I in 1..length(Items)]),
+    Sum #<= Capacity,
+    Cost #= sum([X[I] * Values[I]: I in 1..length(Items)]).
+
+
+
