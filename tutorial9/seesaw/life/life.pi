@@ -1,0 +1,135 @@
+import cp.
+
+main(Args) =>
+    N = parse_term(Args[1]),
+    life(N,Board,NS,Sum),
+    solve($[max(sum(Sum))],Board++NS),
+    prin_matrix(Board),
+    println(sum(Sum)),
+    prin_matrix(NS).
+
+prin_matrix(SUM) =>
+    foreach (I in 1..len(SUM))
+        println(SUM[I]),
+    end.
+
+life(N,TLife,NSum,Sum) => 
+    TLife = new_list(N+2),
+    foreach(I in 1..N+2)
+        TLife[I] = new_list(N+2),
+        TLife[I] :: 0..1, 
+    end,
+
+    foreach(I in 1..N+2)
+        TLife[1,I] #= 0,
+        TLife[N+2,I] #= 0,
+        TLife[I,1] #= 0,
+        TLife[I,N+2] #= 0,
+    end,
+
+    Sum = new_list(N),
+
+    foreach (I in 1..N)
+        Sum[I] #= sum(TLife[I]),
+    end,
+
+    NSum = new_list(N),
+    foreach(I in 1..N)
+        NSum[I] = new_list(N),
+        NSum[I] :: 0..8, 
+    end,
+    
+    foreach(I in 1..N+2, J in 1..N+2)
+        sum_of_neighbors(N,TLife,I,J,NSum[I,J]),
+        TLife[I,J] #= 1 #=> 2 #=< NSum[I,J] #/\ NSum[I,J] #=< 3,
+        TLife[I,J] #= 0 #=> NSum[I,J] #=< 2 #\/ 4 #=< NSum[I,J],
+    end.
+
+
+sum_of_neighbors(N,TLife,I,J,NS) =>
+    Neigbors = new_list(8),
+    Neigbors :: 0..1,
+    TempVals = new_list(8),
+    if (I == 1) then
+        Neigbors[1] #= 0,
+        Neigbors[2] #= 0,
+        Neigbors[3] #= 0,
+        TempVals[1] = 0,
+        TempVals[2] = 0,
+        TempVals[3] = 0,
+    end,
+    if (J == 1) then
+        Neigbors[1] #= 0,
+        Neigbors[4] #= 0,
+        Neigbors[6] #= 0,
+        TempVals[1] = 0,
+        TempVals[4] = 0,
+        TempVals[6] = 0,
+    end,
+    if (I == N) then
+        Neigbors[6] #= 0,
+        Neigbors[7] #= 0,
+        Neigbors[8] #= 0,
+        TempVals[6] = 0,
+        TempVals[7] = 0,
+        TempVals[8] = 0,
+    end,
+    if (J == N) then
+        Neigbors[3] #= 0,
+        Neigbors[5] #= 0,
+        Neigbors[8] #= 0,
+        TempVals[3] = 0,
+        TempVals[5] = 0,
+        TempVals[8] = 0,
+    end,
+
+    if (TempVals[1] == 0) then
+        println("a"),
+    else
+        Neigbors[1] #= TLife[I-1,J-1]
+    end,
+
+    if (TempVals[2] == 0) then
+        println("b"),
+    else
+        Neigbors[2] #= TLife[I-1,J]
+    end,
+
+    if (TempVals[3] == 0) then
+        println("c"),
+    else
+        Neigbors[3] #= TLife[I-1,J+1]
+    end,
+
+    if (TempVals[4] == 0) then
+        println("d"),
+    else
+        Neigbors[4] #= TLife[I,J-1]
+    end,
+
+    if (TempVals[5] == 0) then
+        println("e"),
+    else
+        Neigbors[5] #= TLife[I,J+1]
+    end,
+
+    if (TempVals[6] == 0) then
+        println("i"),
+    else
+        Neigbors[6] #= TLife[I+1,J-1]
+    end,
+
+    if (TempVals[7] == 0) then
+        println("j"),
+    else
+        Neigbors[7] #= TLife[I+1,J]
+    end,
+
+    if (TempVals[8] == 0) then
+        println("k"),
+    else
+        Neigbors[8] #= TLife[I+1,J+1],
+    end,
+    NS #= sum(Neigbors).
+
+    
